@@ -1,0 +1,103 @@
+<?php
+/**
+ * This is the main class responsible for:
+ * 1. Insantiating the SMS provider class
+ * 2. If SMS provider fails, it automatically tries the next provider
+ * 3. If all SMS providers fail, sendFailed() method will be triggered
+ * 
+ * SOLID was one of the main concerns while creating this class
+ * Adding or removing a SMS provider doesn't need any changes on this class nor on the controller itself
+ * Just modifying the .env file will handle everything
+ */
+
+namespace App\Service\SMS;
+
+class SMSComposer
+{
+    /**
+     * Variable to hold SMS Providers defined in .env
+     *
+     * @var String
+     */
+    protected $providers;
+
+    /**
+     * Variable to hold current provider index, defaults to 0 so it starts from 0 index of providers array
+     *
+     * @var Integer
+     */
+    protected $currentProvider = 0;
+
+    /**
+     * Read and Set SMS providers from .env file
+     */
+    public function __construct()
+    {
+        $this->providers = explode(',', $_ENV['SMS_PROVIDERS']);
+    }
+
+    /**
+     * Instantiate proper SMS Provider class based on currentProvider and returns it
+     *
+     * @return Object
+     */
+    public function getProvider()
+    {
+        $ProviderClass = __NAMESPACE__ . '\\Providers\\' . $this->providers[$this->currentProvider];
+
+        $responsibelObject = new $ProviderClass;
+
+        // Increase currentProvider index so next time it picks the next provider
+        $this->currentProvider++;
+
+        return $responsibelObject;
+    }
+
+    /**
+     * Check to see if there is any provider left to try and send SMS with
+     *
+     * @return Boolean
+     */
+    public function isThereAnotherProvider()
+    {
+        return $this->currentProvider + 1 <= count($this->providers);
+    }
+
+    /**
+     * Select SMS provider first and then call sendSMS on the respected object
+     *
+     * @param String $body
+     * @param String $number
+     * @return void
+     */
+    public function send($body, $number)
+    {
+        try {
+            // Getting responsible SMS provider object, each time calling this will instantiate the next SMS provider
+            $sender = $this->getProvider();
+
+            // Call sendSMS method to send the SMS
+            $sender->sendSMS($body, $number);
+
+        } catch (\Throwable $th) {
+
+            // If sending was failed, we check to see if there is another provider left
+            if ($this->isThereAnotherProvider())
+                // This triggers the next provider to send the SMS with
+                $this->send($body, $number);
+            else
+                // We have tried all providers, all faild :(
+                $this->sendFailed();
+        }
+    }
+
+    /**
+     * This will be triggered when all providers failed to send SMS
+     *
+     * @return void
+     */
+    public function sendFailed()
+    {
+        echo 'tried all providers, sending failed :(';
+    }
+}
