@@ -12,6 +12,9 @@
 
 namespace App\Service\SMS;
 
+use App\Entity\Sent;
+use Doctrine\ORM\EntityManagerInterface;
+
 class SMSComposer
 {
     /**
@@ -29,11 +32,21 @@ class SMSComposer
     protected $currentProvider = 0;
 
     /**
-     * Read and Set SMS providers from .env file
+     * Variable to hold Doctrine EntityManager
+     *
+     * @var Object
      */
-    public function __construct()
+    protected $entityManager;
+
+    /**
+     * Read and Set SMS providers from .env file
+     * Also set EntityManager
+     */
+    public function __construct(EntityManagerInterface $entityManager)
     {
         $this->providers = explode(',', $_ENV['SMS_PROVIDERS']);
+
+        $this->entityManager = $entityManager;
     }
 
     /**
@@ -70,16 +83,30 @@ class SMSComposer
      * @param String $number
      * @return void
      */
-    public function send($body, $number)
+    public function send($number, $body)
     {
         try {
             // Getting responsible SMS provider object, each time calling this will instantiate the next SMS provider
             $sender = $this->getProvider();
 
-            // Call sendSMS method to send the SMS
-            $sender->sendSMS($body, $number);
+            // Call sendSMS() method on the provider
+            $sender->sendSMS($number, $body);
+
+            // Log to DB
+            $sent = new Sent();
+
+            $sent
+                ->setNumber($number)
+                ->setBody($body)
+                ->setProvider(get_class($sender));
+
+            $this->entityManager->persist($sent);
+
+            $this->entityManager->flush();
 
         } catch (\Throwable $th) {
+
+            echo $th->getMessage();
 
             // If sending was failed, we check to see if there is another provider left
             if ($this->isThereAnotherProvider())

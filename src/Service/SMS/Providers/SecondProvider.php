@@ -29,6 +29,6 @@ class SecondProvider implements SMSInterface
         if (rand(1, 10) > 5)
             return true;
 
-        throw new \Exception('SMS Provider failed :(');
+        throw new \Exception('Second SMS Provider failed :(');
     }
 }
