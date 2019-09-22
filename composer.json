@@ -14,7 +14,8 @@
     },
     "require-dev": {
         "symfony/maker-bundle": "^1.13",
-        "symfony/var-dumper": "4.3.*"
+        "symfony/var-dumper": "4.3.*",
+        "symfony/web-server-bundle": "4.3.*"
     },
     "config": {
         "preferred-install": {
