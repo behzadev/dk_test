@@ -4,7 +4,7 @@
  * 1. Insantiating the SMS provider class
  * 2. If SMS provider fails, it automatically tries the next provider
  * 3. If all SMS providers fail, sendFailed() method will be triggered
- * 
+ *
  * SOLID was one of the main concerns while creating this class
  * Adding or removing a SMS provider doesn't need any changes on this class nor on the controller itself
  * Just modifying the .env file will handle everything
@@ -12,6 +12,7 @@
 
 namespace App\Service\SMS;
 
+use App\Entity\FailedAttempt;
 use App\Entity\Sent;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -103,28 +104,38 @@ class SMSComposer
             $this->entityManager->persist($sent);
 
             $this->entityManager->flush();
-
         } catch (\Throwable $th) {
-
             echo $th->getMessage();
 
             // If sending was failed, we check to see if there is another provider left
-            if ($this->isThereAnotherProvider())
+            if ($this->isThereAnotherProvider()) {
                 // This triggers the next provider to send the SMS with
-                $this->send($body, $number);
-            else
+                $this->send($number, $body);
+            } else {
                 // We have tried all providers, all faild :(
-                $this->sendFailed();
+                $this->sendFailed($number, $body);
+            }
         }
     }
 
     /**
-     * This will be triggered when all providers failed to send SMS
+     * This will be triggered when all providers failed to send the SMS
      *
      * @return void
      */
-    public function sendFailed()
+    public function sendFailed($number, $body)
     {
-        echo 'tried all providers, sending failed :(';
+        // Log to DB
+        $failedAttempt = new FailedAttempt;
+
+        $failedAttempt
+            ->setNumber($number)
+            ->setBody($body)
+            ->setProvider(get_class($sender))
+            ->setTries(1);
+
+        $this->entityManager->persist($failedAttempt);
+
+        $this->entityManager->flush();
     }
 }

@@ -26,16 +26,6 @@ class FailedAttempt
      */
     private $body;
 
-    /**
-     * @ORM\Column(type="string", length=50)
-     */
-    private $provider;
-
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $tries;
-
     public function getId(): ?int
     {
         return $this->id;
@@ -61,30 +51,6 @@ class FailedAttempt
     public function setBody(string $body): self
     {
         $this->body = $body;
-
-        return $this;
-    }
-
-    public function getProvider(): ?string
-    {
-        return $this->provider;
-    }
-
-    public function setProvider(string $provider): self
-    {
-        $this->provider = $provider;
-
-        return $this;
-    }
-
-    public function getTries(): ?int
-    {
-        return $this->tries;
-    }
-
-    public function setTries(int $tries): self
-    {
-        $this->tries = $tries;
 
         return $this;
     }
