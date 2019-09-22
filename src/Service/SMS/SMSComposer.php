@@ -130,9 +130,7 @@ class SMSComposer
 
         $failedAttempt
             ->setNumber($number)
-            ->setBody($body)
-            ->setProvider(get_class($sender))
-            ->setTries(1);
+            ->setBody($body);
 
         $this->entityManager->persist($failedAttempt);
 
