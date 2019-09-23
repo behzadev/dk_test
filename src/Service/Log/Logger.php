@@ -95,7 +95,8 @@ class Logger
 
         $failedAttempt
             ->setNumber($number)
-            ->setBody($body);
+            ->setBody($body)
+            ->setAttempts(0);
 
         $this->entityManager->persist($failedAttempt);
 
