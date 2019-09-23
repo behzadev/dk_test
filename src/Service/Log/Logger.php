@@ -5,7 +5,7 @@ namespace App\Service\Log;
 use App\Entity\Sent;
 use App\Entity\ProviderLog;
 use App\Entity\FailedAttempt;
-use App\Service\SMS\SMSInterface;
+use App\Service\SMS\SMSProviderInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
 class Logger
@@ -32,11 +32,11 @@ class Logger
      *
      * @param String $number
      * @param String $body
-     * @param SMSInterface $sender
+     * @param SMSProviderInterface $sender
      * @param Boolean $status
      * @return void
      */
-    public function save(String $number, String $body, SMSInterface $sender, bool $status): void
+    public function save(String $number, String $body, SMSProviderInterface $sender, bool $status): void
     {
         // Save as sent if SMS sent successfully
         if ($status) {
@@ -56,11 +56,11 @@ class Logger
     /**
      * Save as provider log
      *
-     * @param SMSInterface $sender
+     * @param SMSProviderInterface $sender
      * @param boolean $status
      * @return void
      */
-    public function saveProviderLog(SMSInterface $sender, bool $status): void
+    public function saveProviderLog(SMSProviderInterface $sender, bool $status): void
     {
         $providerLog = $this->entityManager->getRepository(ProviderLog::class)->findOneBy(['name' => get_class($sender)]);
         
@@ -86,10 +86,10 @@ class Logger
      *
      * @param String $number
      * @param String $body
-     * @param SMSInterface $sender
+     * @param SMSProviderInterface $sender
      * @return void
      */
-    public function saveFailure(String $number, String $body, SMSInterface $sender): void
+    public function saveFailure(String $number, String $body, SMSProviderInterface $sender): void
     {
         $failedAttempt = new FailedAttempt;
 

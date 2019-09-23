@@ -54,7 +54,7 @@ class SMSComposer
      *
      * @return Object
      */
-    public function getProvider(): SMSInterface
+    public function getProvider(): SMSProviderInterface
     {
         $ProviderClass = __NAMESPACE__ . '\\Providers\\' . $this->providers[$this->currentProvider];
 

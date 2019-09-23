@@ -2,9 +2,9 @@
 
 namespace App\Service\SMS\Providers;
 
-use App\Service\SMS\SMSInterface;
+use App\Service\SMS\SMSProviderInterface;
 
-class FirstProvider implements SMSInterface
+class FirstProvider implements SMSProviderInterface
 {
     /**
      * Reads and Returns this provider Api Address from .env file
@@ -23,7 +23,7 @@ class FirstProvider implements SMSInterface
      * @param String $body
      * @return mixed
      */
-    public function sendSMS($number, $body): ?bool
+    public function sendSMS($number, $body): bool
     {
         // Must use GuzzleClient to send request to $this->getApiAddress()
         // But for demo purposes, just returning "true" sometimes or "exception" so SMSComposer picks the next SMS Provider

@@ -2,9 +2,9 @@
 
 namespace App\Service\SMS\Providers;
 
-use App\Service\SMS\SMSInterface;
+use App\Service\SMS\SMSProviderInterface;
 
-class SecondProvider implements SMSInterface
+class SecondProvider implements SMSProviderInterface
 {
     /**
      * Reads and Returns this provider Api Address from .env file

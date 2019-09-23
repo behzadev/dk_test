@@ -2,14 +2,14 @@
 
 namespace App\Service\SMS;
 
-interface SMSInterface
+interface SMSProviderInterface
 {
     /**
      * Should read and return Provider's Api Address from .env file
      *
      * @return String
      */
-    public function getApiAddress();
+    public function getApiAddress(): string;
 
     /**
      * Should trigger the real send method
@@ -18,5 +18,5 @@ interface SMSInterface
      * @param String $body
      * @return ‌mixed
      */
-    public function sendSMS($number, $body);
+    public function sendSMS($number, $body): bool;
 }
