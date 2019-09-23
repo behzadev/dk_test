@@ -9,7 +9,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class ValidateSendSMS implements AppValidatorInterface
 {
+    /**
+     * static property to hold $number
+     *
+     * @var string
+     */
     protected static $number;
+
+    /**
+     * static property to hold $body
+     *
+     * @var string
+     */
     protected static $body;
 
     /**

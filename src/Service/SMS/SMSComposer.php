@@ -1,7 +1,7 @@
 <?php
 /**
  * This is the main class responsible for:
- * 1. Insantiating the SMS provider class
+ * 1. Instantiating the SMS provider class
  * 2. If SMS provider fails, it automatically tries the next provider
  * 3. If all SMS providers fail, allProvidersFailed() method will be triggered
  *
