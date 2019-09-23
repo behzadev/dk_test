@@ -23,10 +23,10 @@ class SmsController extends AbstractController
             return new JsonResponse($validate['body'], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        $number = $request->query->get("number");
-        $body = $request->query->get("body");
-
-        $send = $sms->send($number, $body);
+        $send = $sms->send(
+            $request->query->get("number"),
+            $request->query->get("body")
+        );
 
         return $this->json([
             'status' => $send ? 'success' : 'queued',

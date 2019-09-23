@@ -19,32 +19,16 @@ class ProviderLogRepository extends ServiceEntityRepository
         parent::__construct($registry, ProviderLog::class);
     }
 
-    // /**
-    //  * @return ProviderLog[] Returns an array of ProviderLog objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * To count all sent sms groupby provider
+     *
+     * @return array
+     */
+    public function getAllLog()
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('log')
+            ->select('log.success_count, log.failed_count')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getResult();
     }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?ProviderLog
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }

@@ -19,32 +19,46 @@ class SentRepository extends ServiceEntityRepository
         parent::__construct($registry, Sent::class);
     }
 
-    // /**
-    //  * @return Sent[] Returns an array of Sent objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * To count all sent SMS
+     *
+     * @return int
+     */
+    public function countAll()
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('s.id', 'ASC')
-            ->setMaxResults(10)
+        return $this->createQueryBuilder('sms')
+            ->select('COUNT(sms)')
             ->getQuery()
-            ->getResult()
-        ;
+            ->getSingleScalarResult();
     }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?Sent
+    /**
+     * To count all sent sms groupby provider
+     *
+     * @return array
+     */
+    public function countForProviders()
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
+        return $this->createQueryBuilder('sms')
+            ->select('COUNT(sms)')
+            ->groupby('sms.provider')
             ->getQuery()
-            ->getOneOrNullResult()
-        ;
+            ->getResult();
     }
-    */
+
+    /**
+     * Most 10 message recivers
+     *
+     * @return array
+     */
+    public function mostTenMessageReceivers()
+    {
+        return $this->createQueryBuilder('sms')
+            ->select('sms.number AS number, COUNT(sms) as COUNT')
+            ->groupby('number')
+            ->setMaxResults(10)
+            ->orderBy('COUNT', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

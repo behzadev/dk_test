@@ -2,7 +2,8 @@
 
 namespace App\Controller;
 
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\SentRepository;
+use App\Repository\ProviderLogRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
@@ -11,8 +12,13 @@ class ReportController extends AbstractController
     /**
      * @Route("/reports", methods={"GET"}, name="report")
      */
-    public function index(EntityManagerInterface $entityManager)
+    public function index(SentRepository $sentRepository, ProviderLogRepository $providerLogRepository)
     {
-        return $this->render('reports/index.twig.html');
+        return $this->render('reports/index.html.twig', [
+            'countAllSent' => $sentRepository->countAll(),
+            'eachProviderUsage' => $sentRepository->countForProviders(),
+            'providersLog' => $providerLogRepository->getAllLog(),
+            'mostTenMessageReceivers' => $sentRepository->mostTenMessageReceivers(),
+        ]);
     }
 }

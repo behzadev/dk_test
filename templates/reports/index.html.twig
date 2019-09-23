@@ -1,0 +1,22 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+    All sent SMS count: {{ countAllSent }}
+
+    Each Provider Success Sent Count: 
+    {% for provider in eachProviderUsage %}
+        Provider {{ loop.index }}: {{ provider[1] }}
+    {% endfor %}
+
+    Each Provider Fault Percentage: 
+    {% for provider in providersLog %}
+        Provider {{ loop.index }}: {{ ((provider['failed_count'] * 100) / (provider['success_count'] + provider['failed_count']))|round }}%
+    {% endfor %}
+
+    Most 10 SMS Message Receivers:
+    {% for receiver in mostTenMessageReceivers %}
+        {{ loop.index }}: Number: {{ receiver.number }} (received {{receiver.COUNT}} messages)
+    {% endfor %}
+
+{% endblock %}

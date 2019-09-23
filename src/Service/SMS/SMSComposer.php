@@ -37,7 +37,6 @@ class SMSComposer
      */
     protected $logger;
 
-
     /**
      * Read and Set SMS providers from .env file
      * Also set the logger
