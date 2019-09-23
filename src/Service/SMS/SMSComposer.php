@@ -91,29 +91,31 @@ class SMSComposer
             $sender = $this->getProvider();
 
             // Call sendSMS() method on the provider
-            $sender->sendSMS($number, $body);
+            $send = $sender->sendSMS($number, $body);
 
             // Log to DB
-            $sent = new Sent();
+            // $sent = new Sent();
 
-            $sent
-                ->setNumber($number)
-                ->setBody($body)
-                ->setProvider(get_class($sender));
+            // $sent
+            //     ->setNumber($number)
+            //     ->setBody($body)
+            //     ->setProvider(get_class($sender));
 
-            $this->entityManager->persist($sent);
+            // $this->entityManager->persist($sent);
 
-            $this->entityManager->flush();
+            // $this->entityManager->flush();
+
+            return $send;
+
         } catch (\Throwable $th) {
-            echo $th->getMessage();
 
             // If sending was failed, we check to see if there is another provider left
             if ($this->isThereAnotherProvider()) {
                 // This triggers the next provider to send the SMS with
-                $this->send($number, $body);
+                return $this->send($number, $body);
             } else {
                 // We have tried all providers, all faild :(
-                $this->sendFailed($number, $body);
+                return $this->sendFailed($number, $body);
             }
         }
     }
@@ -126,14 +128,16 @@ class SMSComposer
     public function sendFailed($number, $body)
     {
         // Log to DB
-        $failedAttempt = new FailedAttempt;
+        // $failedAttempt = new FailedAttempt;
 
-        $failedAttempt
-            ->setNumber($number)
-            ->setBody($body);
+        // $failedAttempt
+        //     ->setNumber($number)
+        //     ->setBody($body);
 
-        $this->entityManager->persist($failedAttempt);
+        // $this->entityManager->persist($failedAttempt);
 
-        $this->entityManager->flush();
+        // $this->entityManager->flush();
+
+        return false;
     }
 }

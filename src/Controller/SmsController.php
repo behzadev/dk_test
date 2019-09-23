@@ -19,11 +19,10 @@ class SmsController extends AbstractController
 
         // TODO: make validation
 
-        $sms->send($number, $body);
-        
+        $send = $sms->send($number, $body);
+
         return $this->json([
-            'message' => 'Welcome to your new controller!',
-            'path' => 'src/Controller/SmsController.php',
+            'status' => $send ? 'success' : 'queued',
         ]);
     }
 }
