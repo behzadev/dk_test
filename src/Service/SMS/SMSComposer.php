@@ -82,7 +82,7 @@ class SMSComposer
      * @param String $number
      * @return Boolean
      */
-    public function send(String $number, String $body): ?bool
+    public function send(String $number, String $body, bool $saveFailedAttempt = true): ?bool
     {
         try {
             // Getting responsible SMS provider object, each time calling this will instantiate the next SMS provider
@@ -104,10 +104,14 @@ class SMSComposer
             // If sending was failed, we check to see if there is another provider left
             if ($this->isThereAnotherProvider()) {
                 // This triggers the next provider to send the SMS with
-                return $this->send($number, $body);
+                return $this->send($number, $body, $saveFailedAttempt);
             } else {
                 // We have tried all providers, all failed :(
-                return $this->allProvidersFailed($number, $body, $sender);
+                if ($saveFailedAttempt) {
+                    return $this->allProvidersFailed($number, $body, $sender);
+                } else {
+                    return false;
+                }
             }
         }
     }

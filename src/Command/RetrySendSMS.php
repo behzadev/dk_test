@@ -94,7 +94,8 @@ class RetrySendSMS extends Command
         // trying to send...
         $send = $this->sms->send(
             $row['number'],
-            $row['body']
+            $row['body'],
+            false
         );
 
         $pickedFailedAttempt = $this
