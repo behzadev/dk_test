@@ -3,19 +3,26 @@
 namespace App\Service\Validator;
 
 use Symfony\Component\Validator\Validation;
+use Symfony\Component\HttpFoundation\Request;
 use App\Service\Validator\AppValidatorInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ValidateSendSMS implements AppValidatorInterface
 {
+    protected static $number;
+    protected static $body;
+
     /**
      * main validate method
      *
      * @param array $args
      * @return array
      */
-    public function validate(array $args): array
+    public static function performOn(Request $request): array
     {
+        self::$number = $request->query->get("number");
+        self::$body = $request->query->get("body");
+
         $validator = Validation::createValidator();
 
         $constraint = new Assert\Collection([
@@ -31,8 +38,8 @@ class ValidateSendSMS implements AppValidatorInterface
 
         $validationResult = $validator->validate(
             [
-                'number' => $args['number'],
-                'body' => $args['body'],
+                'number' => self::$number,
+                'body' => self::$body,
             ],
             $constraint
         );

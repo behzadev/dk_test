@@ -2,6 +2,8 @@
 
 namespace App\Service\Validator;
 
+use Symfony\Component\HttpFoundation\Request;
+
 interface AppValidatorInterface
 {
     /**
@@ -10,5 +12,5 @@ interface AppValidatorInterface
      * @param array $args
      * @return array
      */
-    public function validate(array $args): array;
+    public static function performOn(Request $request): array;
 }
