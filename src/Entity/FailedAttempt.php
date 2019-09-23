@@ -26,6 +26,11 @@ class FailedAttempt
      */
     private $body;
 
+    /**
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $attempts;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -51,6 +56,18 @@ class FailedAttempt
     public function setBody(string $body): self
     {
         $this->body = $body;
+
+        return $this;
+    }
+
+    public function getAttempts(): ?int
+    {
+        return $this->attempts;
+    }
+
+    public function setAttempts(?int $attempts): self
+    {
+        $this->attempts = $attempts;
 
         return $this;
     }
