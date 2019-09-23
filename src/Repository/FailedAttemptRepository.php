@@ -28,7 +28,7 @@ class FailedAttemptRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('fa')
             ->select('fa.id as id, fa.number, fa.body')
-            ->orderBy('id', 'ASC')
+            ->orderBy('fa.attempts', 'ASC')
             ->setMaxResults(1)
             ->getQuery()
             ->getSingleResult();
