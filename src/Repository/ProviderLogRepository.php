@@ -24,7 +24,7 @@ class ProviderLogRepository extends ServiceEntityRepository
      *
      * @return array
      */
-    public function getAllLog()
+    public function getAllLog(): array
     {
         return $this->createQueryBuilder('log')
             ->select('log.success_count, log.failed_count')

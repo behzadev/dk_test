@@ -24,7 +24,7 @@ class SentRepository extends ServiceEntityRepository
      *
      * @return int
      */
-    public function countAll()
+    public function countAll(): int
     {
         return $this->createQueryBuilder('sms')
             ->select('COUNT(sms)')
@@ -37,7 +37,7 @@ class SentRepository extends ServiceEntityRepository
      *
      * @return array
      */
-    public function countForProviders()
+    public function countForProviders(): array
     {
         return $this->createQueryBuilder('sms')
             ->select('COUNT(sms)')
@@ -51,7 +51,7 @@ class SentRepository extends ServiceEntityRepository
      *
      * @return array
      */
-    public function mostTenMessageReceivers()
+    public function mostTenMessageReceivers(): array
     {
         return $this->createQueryBuilder('sms')
             ->select('sms.number AS number, COUNT(sms) as COUNT')
