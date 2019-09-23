@@ -13,8 +13,6 @@
 namespace App\Service\SMS;
 
 use App\Service\Log\Logger;
-use App\Service\SMS\SMSInterface;
-
 
 class SMSComposer
 {
@@ -56,7 +54,7 @@ class SMSComposer
      *
      * @return Object
      */
-    public function getProvider()
+    public function getProvider(): SMSInterface
     {
         $ProviderClass = __NAMESPACE__ . '\\Providers\\' . $this->providers[$this->currentProvider];
 
@@ -73,7 +71,7 @@ class SMSComposer
      *
      * @return Boolean
      */
-    public function isThereAnotherProvider()
+    public function isThereAnotherProvider(): bool
     {
         return $this->currentProvider + 1 <= count($this->providers);
     }
@@ -85,7 +83,7 @@ class SMSComposer
      * @param String $number
      * @return Boolean
      */
-    public function send(String $number, String $body)
+    public function send(String $number, String $body): ?bool
     {
         try {
             // Getting responsible SMS provider object, each time calling this will instantiate the next SMS provider
@@ -120,7 +118,7 @@ class SMSComposer
      *
      * @return Boolean
      */
-    public function allProvidersFailed(String $number, String $body, $sender)
+    public function allProvidersFailed(String $number, String $body, $sender): bool
     {
         $this->logger->saveFailure($number, $body, $sender);
 

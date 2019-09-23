@@ -11,7 +11,8 @@ class SecondProvider implements SMSInterface
      *
      * @return String
      */
-    public function getApiAddress() {
+    public function getApiAddress(): string
+    {
         return $_ENV['FIRST_SMS_PROVIDER_API_ADDRESS'];
     }
 
@@ -22,7 +23,8 @@ class SecondProvider implements SMSInterface
      * @param String $body
      * @return mixed
      */
-    public function sendSMS($number, $body) {
+    public function sendSMS($number, $body): bool
+    {
         // Must use GuzzleClient to send request to $this->getApiAddress()
         // But for demo purposes, just returning "true" sometimes or "exception" so SMSComposer picks the next SMS Provider
 

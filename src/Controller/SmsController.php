@@ -6,13 +6,14 @@ use App\Service\SMS\SMSComposer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class SmsController extends AbstractController
 {
     /**
      * @Route("/sms/send", methods={"POST"}, name="sms_send")
      */
-    public function send(Request $request, SMSComposer $sms)
+    public function send(Request $request, SMSComposer $sms): JsonResponse
     {
         $number = $request->query->get("number");
         $body = $request->query->get("body");

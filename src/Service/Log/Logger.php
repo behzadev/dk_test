@@ -36,7 +36,7 @@ class Logger
      * @param Boolean $status
      * @return void
      */
-    public function save(String $number, String $body, SMSInterface $sender, bool $status)
+    public function save(String $number, String $body, SMSInterface $sender, bool $status): void
     {
         // Save as sent if SMS sent successfully
         if ($status) {
@@ -60,7 +60,7 @@ class Logger
      * @param boolean $status
      * @return void
      */
-    public function saveProviderLog(SMSInterface $sender, bool $status)
+    public function saveProviderLog(SMSInterface $sender, bool $status): void
     {
         $providerLog = $this->entityManager->getRepository(ProviderLog::class)->findOneBy(['name' => get_class($sender)]);
         
@@ -89,7 +89,7 @@ class Logger
      * @param SMSInterface $sender
      * @return void
      */
-    public function saveFailure(String $number, String $body, SMSInterface $sender)
+    public function saveFailure(String $number, String $body, SMSInterface $sender): void
     {
         $failedAttempt = new FailedAttempt;
 
