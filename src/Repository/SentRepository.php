@@ -56,8 +56,8 @@ class SentRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('sms')
             ->select('sms.number AS number, COUNT(sms) as COUNT')
             ->groupby('number')
-            ->setMaxResults(10)
             ->orderBy('COUNT', 'DESC')
+            ->setMaxResults(10)
             ->getQuery()
             ->getResult();
     }
