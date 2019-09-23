@@ -3,14 +3,18 @@
  * This is the main class responsible for:
  * 1. Insantiating the SMS provider class
  * 2. If SMS provider fails, it automatically tries the next provider
- * 3. If all SMS providers fail, sendFailed() method will be triggered
+ * 3. If all SMS providers fail, allProvidersFailed() method will be triggered
  *
- * SOLID was one of the main concerns while creating this class
+ * SOLID principles was one of the main concerns while creating this class
  * Adding or removing a SMS provider doesn't need any changes on this class nor on the controller itself
  * Just modifying the .env file will handle everything
  */
 
 namespace App\Service\SMS;
+
+use App\Service\Log\Logger;
+use App\Service\SMS\SMSInterface;
+
 
 class SMSComposer
 {
@@ -29,11 +33,22 @@ class SMSComposer
     protected $currentProvider = 0;
 
     /**
-     * Read and Set SMS providers from .env file
+     * Variable to hold logger instance
+     *
+     * @var Object
      */
-    public function __construct()
+    protected $logger;
+
+
+    /**
+     * Read and Set SMS providers from .env file
+     * Also set the logger
+     */
+    public function __construct(Logger $logger)
     {
         $this->providers = explode(',', $_ENV['SMS_PROVIDERS']);
+
+        $this->logger = $logger;
     }
 
     /**
@@ -68,28 +83,34 @@ class SMSComposer
      *
      * @param String $body
      * @param String $number
-     * @return void
+     * @return Boolean
      */
-    public function send($number, $body)
+    public function send(String $number, String $body)
     {
         try {
             // Getting responsible SMS provider object, each time calling this will instantiate the next SMS provider
             $sender = $this->getProvider();
 
             // Call sendSMS() method on the provider
-            $send = $sender->sendSMS($number, $body);
+            $sender->sendSMS($number, $body);
 
-            return $send;
+            // Log send success
+            $this->logger->save($number, $body, $sender, true);
+
+            return true;
 
         } catch (\Throwable $th) {
+
+            // Log send failure
+            $this->logger->save($number, $body, $sender, false);
 
             // If sending was failed, we check to see if there is another provider left
             if ($this->isThereAnotherProvider()) {
                 // This triggers the next provider to send the SMS with
                 return $this->send($number, $body);
             } else {
-                // We have tried all providers, all faild :(
-                return $this->sendFailed($number, $body);
+                // We have tried all providers, all failed :(
+                return $this->allProvidersFailed($number, $body, $sender);
             }
         }
     }
@@ -97,10 +118,12 @@ class SMSComposer
     /**
      * This will be triggered when all providers failed to send the SMS
      *
-     * @return void
+     * @return Boolean
      */
-    public function sendFailed($number, $body)
+    public function allProvidersFailed(String $number, String $body, $sender)
     {
+        $this->logger->saveFailure($number, $body, $sender);
+
         return false;
     }
 }

@@ -7,7 +7,7 @@ interface SMSInterface
     /**
      * Should read and return Provider's Api Address from .env file
      *
-     * @return void
+     * @return String
      */
     public function getApiAddress();
 
@@ -16,7 +16,7 @@ interface SMSInterface
      *
      * @param String $number
      * @param String $body
-     * @return void
+     * @return ‌mixed
      */
     public function sendSMS($number, $body);
 }

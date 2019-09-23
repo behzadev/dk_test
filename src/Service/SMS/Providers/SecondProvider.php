@@ -26,7 +26,7 @@ class SecondProvider implements SMSInterface
         // Must use GuzzleClient to send request to $this->getApiAddress()
         // But for demo purposes, just returning "true" sometimes or "exception" so SMSComposer picks the next SMS Provider
 
-        if (rand(1, 10) > 5)
+        if (rand(1, 10) > 7)
             return true;
 
         throw new \Exception('Second SMS Provider failed :(');
