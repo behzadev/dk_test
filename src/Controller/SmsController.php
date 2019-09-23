@@ -3,10 +3,12 @@
 namespace App\Controller;
 
 use App\Service\SMS\SMSComposer;
+use App\Service\Validator\ValidateSendSMS;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
 
 class SmsController extends AbstractController
 {
@@ -18,7 +20,10 @@ class SmsController extends AbstractController
         $number = $request->query->get("number");
         $body = $request->query->get("body");
 
-        // TODO: make validation
+        $validate = (new ValidateSendSMS())->validate(['number' => $number, 'body' => $body]);
+
+        if (!$validate['status'])
+            return new JsonResponse($validate['body'], Response::HTTP_UNPROCESSABLE_ENTITY);
 
         $send = $sms->send($number, $body);
 
