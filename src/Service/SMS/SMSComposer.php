@@ -38,6 +38,13 @@ class SMSComposer
     protected $logger;
 
     /**
+     * Variable to hold if it is needed to save a failed attempt while all providers fail to send SMS
+     *
+     * @var Boolean
+     */
+    public $saveFailedAttempt = true;
+
+    /**
      * Read and Set SMS providers from .env file
      * Also set the logger
      */
@@ -82,7 +89,7 @@ class SMSComposer
      * @param String $number
      * @return Boolean
      */
-    public function send(String $number, String $body, bool $saveFailedAttempt = true): ?bool
+    public function send(String $number, String $body): ?bool
     {
         try {
             // Getting responsible SMS provider object, each time calling this will instantiate the next SMS provider
@@ -104,14 +111,10 @@ class SMSComposer
             // If sending was failed, we check to see if there is another provider left
             if ($this->isThereAnotherProvider()) {
                 // This triggers the next provider to send the SMS with
-                return $this->send($number, $body, $saveFailedAttempt);
+                return $this->send($number, $body);
             } else {
                 // We have tried all providers, all failed :(
-                if ($saveFailedAttempt) {
-                    return $this->allProvidersFailed($number, $body, $sender);
-                } else {
-                    return false;
-                }
+                return $this->allProvidersFailed($number, $body, $sender);
             }
         }
     }
@@ -123,7 +126,9 @@ class SMSComposer
      */
     public function allProvidersFailed(String $number, String $body, $sender): bool
     {
-        $this->logger->saveFailure($number, $body, $sender);
+        if ($this->saveFailedAttempt) {
+            $this->logger->saveFailure($number, $body, $sender);
+        }
 
         return false;
     }

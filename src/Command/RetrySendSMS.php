@@ -92,10 +92,10 @@ class RetrySendSMS extends Command
         ]);
 
         // trying to send...
+        $this->sms->saveFailedAttempt = false; // so not to insert a new failed attempt if all providers fail
         $send = $this->sms->send(
             $row['number'],
-            $row['body'],
-            false
+            $row['body']
         );
 
         $pickedFailedAttempt = $this
