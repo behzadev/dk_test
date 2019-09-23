@@ -12,10 +12,6 @@
 
 namespace App\Service\SMS;
 
-use App\Entity\FailedAttempt;
-use App\Entity\Sent;
-use Doctrine\ORM\EntityManagerInterface;
-
 class SMSComposer
 {
     /**
@@ -33,21 +29,11 @@ class SMSComposer
     protected $currentProvider = 0;
 
     /**
-     * Variable to hold Doctrine EntityManager
-     *
-     * @var Object
-     */
-    protected $entityManager;
-
-    /**
      * Read and Set SMS providers from .env file
-     * Also set EntityManager
      */
-    public function __construct(EntityManagerInterface $entityManager)
+    public function __construct()
     {
         $this->providers = explode(',', $_ENV['SMS_PROVIDERS']);
-
-        $this->entityManager = $entityManager;
     }
 
     /**
@@ -93,18 +79,6 @@ class SMSComposer
             // Call sendSMS() method on the provider
             $send = $sender->sendSMS($number, $body);
 
-            // Log to DB
-            // $sent = new Sent();
-
-            // $sent
-            //     ->setNumber($number)
-            //     ->setBody($body)
-            //     ->setProvider(get_class($sender));
-
-            // $this->entityManager->persist($sent);
-
-            // $this->entityManager->flush();
-
             return $send;
 
         } catch (\Throwable $th) {
@@ -127,17 +101,6 @@ class SMSComposer
      */
     public function sendFailed($number, $body)
     {
-        // Log to DB
-        // $failedAttempt = new FailedAttempt;
-
-        // $failedAttempt
-        //     ->setNumber($number)
-        //     ->setBody($body);
-
-        // $this->entityManager->persist($failedAttempt);
-
-        // $this->entityManager->flush();
-
         return false;
     }
 }
