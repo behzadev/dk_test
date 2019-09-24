@@ -61,4 +61,21 @@ class SentRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Search for number in sents
+     *
+     * @param String $number
+     * @return array
+     */
+    public function searchForNumber(String $number): array
+    {
+        return $this->createQueryBuilder('sms')
+            ->andWhere('sms.number = :number')
+            ->setParameter('number', $number)
+            ->select("sms.body AS body, DATE_FORMAT(sms.createdAt, '%Y-%m-%d %h:%i:%s') AS datetime")
+            ->orderBy('sms.createdAt', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }

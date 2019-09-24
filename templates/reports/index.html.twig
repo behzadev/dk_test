@@ -1,22 +1,71 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
+    <div style="display: block">
+        All sent SMS count: {{ countAllSent }}
 
-    All sent SMS count: {{ countAllSent }}
+        <br>
+        <br>
+        
+        Each Provider Success Sent Count: 
+        {% for provider in eachProviderUsage %}
+            <li>
+            Provider {{ loop.index }}: {{ provider[1] }}
+            </li>
+        {% endfor %}
 
-    Each Provider Success Sent Count: 
-    {% for provider in eachProviderUsage %}
-        Provider {{ loop.index }}: {{ provider[1] }}
-    {% endfor %}
+        <br>
+        <br>
 
-    Each Provider Fault Percentage: 
-    {% for provider in providersLog %}
-        Provider {{ loop.index }}: {{ ((provider['failed_count'] * 100) / (provider['success_count'] + provider['failed_count']))|round }}%
-    {% endfor %}
+        Each Provider Fault Percentage: 
+        {% for provider in providersLog %}
+            <li>
+            Provider {{ loop.index }}: {{ ((provider['failed_count'] * 100) / (provider['success_count'] + provider['failed_count']))|round }}%
+            </li>
+        {% endfor %}
 
-    Most 10 SMS Message Receivers:
-    {% for receiver in mostTenMessageReceivers %}
-        {{ loop.index }}: Number: {{ receiver.number }} (received {{receiver.COUNT}} messages)
-    {% endfor %}
+        <br>
+        <br>
 
+        Most 10 SMS Message Receivers:
+        {% for receiver in mostTenMessageReceivers %}
+            <li>
+            {{ loop.index }}: {{ receiver.number }} (received {{receiver.COUNT}} messages)
+            </li>
+        {% endfor %}
+
+        <br>
+        <br>
+
+        Search by number: <input type="text" id="number" placeholder="press enter to search">
+        <div id="search_results">
+
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('#number').keypress(function(event){
+            var keycode = (event.keyCode ? event.keyCode : event.which);
+            if(keycode == '13'){
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://localhost:8000/reports/search',
+                    data: {'number': $('#number').val()},
+                    success: function(response) {
+                        results = '';
+                        $.each(response.results, function(key, value) {
+                            results+= '<li><b>Body:</b> '  + value.body +', <b>Date:</b>'+value.datetime+'</li>';
+                        });
+                        $('#search_results').html(results);
+                    }
+                });
+            }
+        });
+    })
+</script>
 {% endblock %}
