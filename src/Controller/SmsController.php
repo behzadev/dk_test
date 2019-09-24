@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class SmsController extends AbstractController
 {
     /**
-     * @Route("/sms/send", methods={"POST"}, name="sms_send")
+     * @Route("/sms/send", methods={"GET"}, name="sms_send")
      */
     public function send(Request $request, SMSComposer $sms): JsonResponse
     {
