@@ -41,11 +41,7 @@ class ReportController extends AbstractController
     {
         $number = $request->request->get("number");
 
-        // $validate = ValidateSearch::performOn($request);
-
-        // if (!$validate['status']) {
-        //     return new JsonResponse($validate['body'], Response::HTTP_UNPROCESSABLE_ENTITY);
-        // }
+        // TODO: implement validation
 
         return $this->json([
             'results' => $sentRepository->searchForNumber($number)
