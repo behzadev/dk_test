@@ -105,8 +105,6 @@ class SMSComposer
 
         } catch (\Throwable $th) {
 
-            echo $th->getMessage();
-
             // Log send failure
             $this->logger->save($number, $body, $sender, false);
 
