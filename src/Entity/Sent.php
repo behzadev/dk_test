@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping\Index;
 use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\SentRepository")
@@ -12,6 +13,8 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Sent
 {
+    use TimestampableEntity;
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
